@@ -266,7 +266,7 @@ export const BusinessModal: React.FC<BusinessModalProps> = ({
     setTimeout(() => setSeoCopied(false), 3000);
   };
 
-  const allPhones = business.phones && business.phones.length > 0 ? business.phones : [business.phone];
+  const allPhones = (business.phones && business.phones.length > 0 ? business.phones : [business.phone || '']).filter(Boolean);
 
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${business.name} ${business.addr} ${business.city}`
@@ -699,7 +699,7 @@ export const BusinessModal: React.FC<BusinessModalProps> = ({
 
             {/* واتساب مصغر */}
             <a
-              href={`https://wa.me/${business.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+              href={`https://wa.me/${(business.whatsapp || business.phone || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
                 `مرحباً ${business.name}، استفسار مباشر من منصة إعلانك دليلك الخاص`
               )}`}
               target="_blank"
@@ -1119,7 +1119,7 @@ export const BusinessModal: React.FC<BusinessModalProps> = ({
                   href={`https://wa.me/${
                     whatsappCallerNumber.replace(/\D/g, '')
                       ? `2${whatsappCallerNumber.replace(/\D/g, '').replace(/^2/, '')}`
-                      : `2${business.whatsapp.replace(/\D/g, '').replace(/^2/, '')}`
+                      : `2${(business.whatsapp || business.phone || '').replace(/\D/g, '').replace(/^2/, '')}`
                   }?text=${encodeURIComponent(
                     `${business.customWhatsappTemplate || `مرحباً ${business.name}، تفعيل التتبع المباشر للمتصل على الواتساب`}\n🛰️ الموقع عبر القمر الصناعي: https://maps.google.com/?q=${business.lat || 30.0444},${business.lng || 31.2357}\n🟢 الحالة: ${business.workStatus === 'inactive' ? 'في عطلة OFF' : 'في العمل ON'}${business.vehiclePlateNumber ? `\n🚘 رقم المركبة: ${business.vehiclePlateNumber}` : ''}`
                   )}`}
@@ -1967,7 +1967,7 @@ export const BusinessModal: React.FC<BusinessModalProps> = ({
 
                   <div className="flex items-center gap-1.5 ms-auto">
                     <a
-                      href={`https://wa.me/${ph.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                      href={`https://wa.me/${(ph || '').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
                         `مرحباً ${business.name}، استفسار من منصة إعلانك E3lanak`
                       )}`}
                       target="_blank"

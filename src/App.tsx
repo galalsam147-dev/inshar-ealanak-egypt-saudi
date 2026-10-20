@@ -63,8 +63,33 @@ const ORDERS_KEY = 'dalilk_delivery_orders';
 const NOTIF_KEY = 'dalilk_mock_notifications';
 
 export default function App() {
-  // Load businesses from localStorage or fallback, merging any newly added INITIAL_BUSINESSES
+  // Load businesses from localStorage or fallback, merging any newly added INITIAL_BUSINESSES and ensuring unique IDs
   const [businesses, setBusinesses] = useState<Business[]>(() => {
+    const ensureUniqueBusinesses = (list: Business[]): Business[] => {
+      const seenIds = new Set<string>();
+      const seenNames = new Set<string>();
+      const result: Business[] = [];
+      let nextId = 500;
+      for (const b of list) {
+        if (!b || !b.name) continue;
+        const nameKey = b.name.trim();
+        if (seenNames.has(nameKey)) continue;
+        seenNames.add(nameKey);
+        let idStr = String(b.id);
+        let finalBiz = b;
+        if (seenIds.has(idStr)) {
+          while (seenIds.has(String(nextId))) {
+            nextId++;
+          }
+          finalBiz = { ...b, id: nextId };
+          idStr = String(nextId);
+        }
+        seenIds.add(idStr);
+        result.push(finalBiz);
+      }
+      return result;
+    };
+
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -74,18 +99,15 @@ export default function App() {
             (b: Business) => b.status === 'active' && b.expiry > Date.now()
           );
           if (hasActive) {
-            const existingIds = new Set(parsed.map((b) => String(b.id)));
-            const missingInitial = INITIAL_BUSINESSES.filter(
-              (initBiz) => !existingIds.has(String(initBiz.id))
-            );
-            return missingInitial.length > 0 ? [...missingInitial, ...parsed] : parsed;
+            const combined = [...INITIAL_BUSINESSES, ...parsed];
+            return ensureUniqueBusinesses(combined);
           }
         }
       }
     } catch (e) {
       console.error('Failed to load from storage:', e);
     }
-    return INITIAL_BUSINESSES;
+    return ensureUniqueBusinesses(INITIAL_BUSINESSES);
   });
 
   // Liked businesses IDs
