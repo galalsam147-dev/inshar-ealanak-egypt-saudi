@@ -1,0 +1,11 @@
+{
+  "name": "Remix  اطلب الاقرب ليك",
+  "description": "منصة دليلك التجاري المرئي في مصر والدول العربية - استكشف المطاعم، الفنادق، الشركات والخدمات عبر فيديوهات ريلز وقوائم تفاعلية",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
